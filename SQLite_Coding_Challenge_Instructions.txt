@@ -1,0 +1,20 @@
+Coding Challenge — SQLite Analytics with bais_sqlite_lab.db (No Code Provided)
+
+Overview:
+Use SQL to answer four business questions with SELECT, JOIN, GROUP BY, ORDER BY, and HAVING.
+Work against the provided database using VS Code + SQLTools (SQLite driver) or any SQLite viewer.
+
+Files included:
+- bais_sqlite_lab.db : The SQLite database.
+- challenge.sql : Your SQL submission file (create and fill this in).
+- INSIGHTS.md : Your summary/insight file (create and fill this in).
+
+Tasks Summary:
+1. Top 5 customers by total spend.
+2. Total revenue by product category.
+3. Employees earning above department average.
+4. Cities with the most loyal customers.
+
+Deliverables:
+- challenge.sql (your queries)
+- INSIGHTS.md (your findings)
