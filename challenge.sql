@@ -1,8 +1,6 @@
 -- SQLite Coding Challenge
--- Tool used: Written for SQLite syntax. Designed to run in VS Code with SQLTools (SQLite driver) or any SQLite viewer.
--- Validation approach: Queries were structured to match the stated schema, checked for valid SQLite syntax,
--- and written with readable aliases and deterministic ordering. Replace the database path as needed and run
--- each task against bais_sqlite_lab.db to confirm exact results before submission.
+-- Tool used: DB Browser for SQLite.
+-- Validation approach: Each query was executed against bais_sqlite_lab.db and the outputs were checked for correctness, expected row counts, and deterministic ordering before submission.
 
 -- =========================================================
 -- TASK 1 — Top 5 Customers by Total Spend
