@@ -1,13 +1,15 @@
--- SQLite Coding Challenge
--- Tool used: DB Browser for SQLite.
--- Validation approach: Each query was executed against bais_sqlite_lab.db and the outputs were checked for correctness, expected row counts, and deterministic ordering before submission.
+-- SQL Sales Analysis
+-- Tool used: DB Browser for SQLite
+-- Database: bais_sqlite_lab.db
+-- Purpose: Analyze customer spending, product revenue, employee salaries,
+-- and loyalty distribution using SQL.
 
 -- =========================================================
--- TASK 1 — Top 5 Customers by Total Spend
--- Goal: Identify the five customers with the highest lifetime spend.
--- Logic: Calculate line totals at the item level, roll up to customer.
--- Note: This version includes all order statuses, per assignment guidance.
+-- QUERY 1 — Top 5 Customers by Total Spend
+-- Business Question:
+-- Which customers generate the most revenue?
 -- =========================================================
+
 WITH customer_spend AS (
     SELECT
         c.id AS customer_id,
@@ -30,13 +32,15 @@ FROM customer_spend
 ORDER BY total_spend DESC, customer_full_name
 LIMIT 5;
 
+
 -- =========================================================
--- TASK 2 — Total Revenue by Product Category
--- Goal: Determine total revenue for each product category.
--- Logic: Sum item-level line totals grouped by product category.
+-- QUERY 2 — Total Revenue by Product Category
+-- Business Question:
+-- Which product categories generate the most revenue?
 -- =========================================================
+
 SELECT
-    p.category AS category,
+    p.category,
     ROUND(SUM(oi.quantity * oi.unit_price), 2) AS revenue
 FROM products AS p
 JOIN order_items AS oi
@@ -46,12 +50,15 @@ JOIN orders AS o
 GROUP BY p.category
 ORDER BY revenue DESC, category;
 
+
 -- =========================================================
--- TASK 2 (OPTIONAL VARIANT) — Revenue by Product Category
--- Using only Delivered orders for a realized-revenue view.
+-- QUERY 3 — Delivered Revenue by Product Category
+-- Business Question:
+-- Which categories generate the most realized revenue from delivered orders?
 -- =========================================================
+
 SELECT
-    p.category AS category,
+    p.category,
     ROUND(SUM(oi.quantity * oi.unit_price), 2) AS delivered_revenue
 FROM products AS p
 JOIN order_items AS oi
@@ -62,11 +69,13 @@ WHERE o.status = 'Delivered'
 GROUP BY p.category
 ORDER BY delivered_revenue DESC, category;
 
+
 -- =========================================================
--- TASK 3 — Employees Earning Above Their Department Average
--- Goal: List employees whose salary is strictly greater than their own department’s average.
--- Logic: Compute department averages, then compare each employee to the average for their department.
+-- QUERY 4 — Employees Earning Above Department Average
+-- Business Question:
+-- Which employees earn more than the average salary in their department?
 -- =========================================================
+
 WITH department_avg AS (
     SELECT
         department_id,
@@ -79,20 +88,23 @@ SELECT
     e.last_name,
     d.name AS department_name,
     e.salary AS employee_salary,
-    ROUND(da.avg_salary, 2) AS department_average
+    ROUND(da.avg_salary, 2) AS department_average,
+    ROUND(e.salary - da.avg_salary, 2) AS amount_above_average
 FROM employees AS e
 JOIN departments AS d
     ON e.department_id = d.id
 JOIN department_avg AS da
     ON e.department_id = da.department_id
 WHERE e.salary > da.avg_salary
-ORDER BY department_name, employee_salary DESC, e.last_name, e.first_name;
+ORDER BY department_name, amount_above_average DESC;
+
 
 -- =========================================================
--- TASK 4 — Cities with the Most Loyal Customers
--- Goal: Rank cities by count of Gold loyalty customers.
--- Logic: Count customers labeled Gold grouped by city.
+-- QUERY 5 — Cities with the Most Gold Customers
+-- Business Question:
+-- Which cities have the highest number of Gold-tier customers?
 -- =========================================================
+
 SELECT
     city,
     COUNT(*) AS gold_customer_count
@@ -101,10 +113,13 @@ WHERE loyalty_level = 'Gold'
 GROUP BY city
 ORDER BY gold_customer_count DESC, city ASC;
 
+
 -- =========================================================
--- TASK 4 (RECOMMENDED EXTENSION) — Loyalty Distribution by City
--- Goal: Show Gold / Silver / Bronze customer mix by city.
+-- QUERY 6 — Loyalty Distribution by City
+-- Business Question:
+-- What is the loyalty-level mix across each city?
 -- =========================================================
+
 SELECT
     city,
     SUM(CASE WHEN loyalty_level = 'Gold' THEN 1 ELSE 0 END) AS gold_count,
@@ -113,4 +128,4 @@ SELECT
     COUNT(*) AS total_customers
 FROM customers
 GROUP BY city
-ORDER BY gold_count DESC, city ASC;
+ORDER BY gold_count DESC, total_customers DESC, city ASC;
